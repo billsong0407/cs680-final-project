@@ -1,0 +1,6 @@
+Working title: “Detecting house plants disease with machine learning”
+
+House plants are nowadays a common component of many households,
+
+
+House plants are vulnerable to various diseases, many household own multiple plants but lack the knowledge to identify their health status and provide corresponding solution. At the time of this writing, most research for plants diseases focus on crops and more generally on agriculture. We propose to use CNN based model and image classification techniques to detect plant diseases such as sooty mould, powdery mildew, collar rot, etc.
