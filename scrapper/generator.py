@@ -2,7 +2,7 @@ import argparse
 from icrawler.builtin import BingImageCrawler, GoogleImageCrawler
 
 def download_images_from_google(query, num_images, image_size=None):
-    google_crawler = GoogleImageCrawler(storage={'root_dir': 'images'})
+    google_crawler = GoogleImageCrawler(storage={'root_dir': 'dataset/google_images'})
     google_crawler.crawl(keyword=query, max_num=num_images, 
                        filters={'size': image_size} if image_size else None)
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.browser.lower() == 'chrome':
+    if args.browser.lower() == 'google':
         download_images_from_google(args.query, args.num_images, args.size)
     elif args.browser.lower() == 'bing':
         download_images_from_bing(args.query, args.num_images, args.size)
