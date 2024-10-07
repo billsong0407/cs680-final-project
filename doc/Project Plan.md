@@ -12,7 +12,9 @@ Dataset:
 - https://ashleypoon-nyc.medium.com/detecting-plant-health-using-yolov4-modeling-35995775bdc2
 
 Disease:
-- https://bioadvanced.com/signs-common-houseplant-diseases
+- Anthracnose
+- Powdery Mildew
+- Sooty mold
 
 
 
