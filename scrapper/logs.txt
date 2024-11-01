@@ -1,0 +1,7 @@
+python generator.py -q "healthy house plant" -b "bing" -n 500 -s "medium"
+python generator.py -q "healthy house plant" -b "google" -n 500 -s "medium"
+python generator.py -q "anthracnose house plant" -b "google" -n 500 -s "medium"
+python generator.py -q "anthracnose house plant" -b "bing" -n 500 -s "medium"
+python generator.py -q "sooty mold house plant" -b "google" -n 500 -s "medium"
+python generator.py -q "sooty mold house plant" -b "bing" -n 500 -s "medium"
+python generator.py -q "powdery mildew house plant" -b "bing" -n 500 -s "medium"

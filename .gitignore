@@ -163,3 +163,4 @@ cython_debug/
 
 scrapper/dataset/*
 v1/*
+pyenv/*
