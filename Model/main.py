@@ -39,30 +39,57 @@ loss_func = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.fc.parameters(), lr=0.001, momentum=0.9)
 
 
-def training(model, num_epochs, train_loader, val_loader):
-    best_val_acc = 0.0
+### Training phase ###
+best_val_acc = 0.0
 
-    for epoch in range(num_epochs):
-        model.train()
+for epoch in range(10):
+    model.train()
+    running_loss = 0.0
+    correct_train = 0
+    total_train = 0
 
-        for input, label in train_loader:
+    for input, label in train_loader:
+        # input, label = input.to(device), label.to(device)
+        optimizer.zero_grad()
+
+        output = model(input)
+        loss = loss_func(output, label)
+        loss.backward()
+        optimizer.step()
+
+        _, predicted = torch.max(output, 1)
+        total_train += label.size(0)
+        correct_train += (predicted == label).sum().item()
+
+        running_loss += loss.item()
+
+
+    model.eval()
+    correct_val = 0
+    total_val = 0
+    with torch.no_grad():
+        for input, label in val_loader:
             # input, label = input.to(device), label.to(device)
-            optimizer.zero_grad()
-
             output = model(input)
-            loss = loss_func(output, label)
-            loss.backward()
-            optimizer.step()
+            _, predicted = torch.max(output, 1)
+            total_val += label.size(0)
+            correct_val += (predicted == label).sum().item()
 
-        # model.eval()
-        # with torch.no_grad():
-        #     for input, label in val_loader:
-        #         # input, label = input.to(device), label.to(device)
-        #         output = model(input)
+    train_acc = correct_train / total_train * 100
+    val_acc = correct_val / total_val * 100
 
+    print(f"Epoch [{epoch + 1}], "
+          f"Train Loss: {running_loss / len(train_loader):.4f}, "
+          f"Train Acc: {train_acc:.2f}%, "
+          f"Val Acc: {val_acc:.2f}%")
 
+    # Save the model if validation accuracy improves
+    if val_acc > best_val_acc:
+        best_val_acc = val_acc
+        torch.save(model.state_dict(), 'best_resnet50.pth')
 
-## Testing Phase
+### Testing phase ###
+model.load_state_dict(torch.load('best_resnet50.pth'))
 model.eval()
 correct_test = 0
 total_test = 0
@@ -76,5 +103,3 @@ with torch.no_grad():
 
 test_acc = correct_test / total_test * 100
 print(f"Test Accuracy: {test_acc:.2f}%")
-
-
