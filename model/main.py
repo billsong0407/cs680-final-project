@@ -1,16 +1,43 @@
-from datetime import datetime
+
+import os
+import logging
 import torch
 import torchvision.models as models
 from torchvision.datasets import ImageFolder
 from torchvision.transforms import transforms
 from torch.utils.data import DataLoader, ConcatDataset, random_split
+from datetime import datetime
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
-def save_model(model, path=f"/trained_models/model_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pth"):
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+logs_dir = './logs'
+log_file_path = f'{logs_dir}/log_{timestamp}.txt'
+file_handler = logging.FileHandler(log_file_path)
+
+# Ensure the logs directory exists
+os.makedirs(logs_dir, exist_ok=True)
+
+console_handler = logging.StreamHandler()
+file_handler = logging.FileHandler(f'./logs/log_{timestamp}.txt')
+
+# Set log format
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+# Add handlers to the logger
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
+def save_model(model, path):
     try:
         torch.save(model.state_dict(), path)
+        logger.info(f"Model saved successfully at {path}")
+
     except Exception as e:
-        print(f"Error saving the model: {e}")
+        logger.error(f"Error saving the model: {e}")
 
 def load_model(model_class, path):
     model = model_class()
@@ -20,7 +47,7 @@ def load_model(model_class, path):
 
 # Define the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
+logger.info(f"Using device: {device}")
 
 # Define the transformations to apply to the images
 transform = transforms.Compose([
@@ -31,9 +58,10 @@ transform = transforms.Compose([
 ])
 
 # Load the datasets
-dataset1 = ImageFolder('/scrapper/dataset/bing_images',
+logger.info("Loading datasets")
+dataset1 = ImageFolder('./scrapper/dataset/bing_images',
                        transform=transform)
-dataset2 = ImageFolder('/scrapper/dataset/google_images',
+dataset2 = ImageFolder('./scrapper/dataset/google_images',
                        transform=transform)
 
 combined_dataset = ConcatDataset([dataset1, dataset2])
@@ -42,7 +70,7 @@ test_size = total_size - int(0.7 * total_size) - int(0.15 * total_size)
 train_dataset, val_dataset, test_dataset = random_split(combined_dataset, [int(0.7 * total_size),
                                                                            int(0.15 * total_size),
                                                                            test_size])
-
+logger.info("Splitting datasets")
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
@@ -64,6 +92,8 @@ for epoch in range(10):
     running_loss = 0.0
     correct_train = 0
     total_train = 0
+
+    logger.info(f"Begin Epoch {epoch}")
 
     for input, label in train_loader:
         input, label = input.to(device), label.to(device)
@@ -94,7 +124,7 @@ for epoch in range(10):
     train_acc = correct_train / total_train * 100
     val_acc = correct_val / total_val * 100
 
-    print(f"Epoch [{epoch + 1}], "
+    logger.info(f"Epoch [{epoch + 1}], "
           f"Train Loss: {running_loss / len(train_loader):.4f}, "
           f"Train Acc: {train_acc:.2f}%, "
           f"Val Acc: {val_acc:.2f}%")
@@ -118,6 +148,6 @@ with torch.no_grad():
         correct_test += (predicted == labels).sum().item()
 
 test_acc = correct_test / total_test * 100
-print(f"Test Accuracy: {test_acc:.2f}%")
+logger.info(f"Test Accuracy: {test_acc:.2f}%")
 
-save_model(model)
+save_model(model, path=f"./trained_models/model_{timestamp}.pth")

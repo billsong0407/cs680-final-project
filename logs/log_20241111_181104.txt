@@ -1,0 +1,14 @@
+2024-11-11 18:11:04,679 - INFO - Using device: cpu
+2024-11-11 18:11:04,680 - INFO - Loading datasets
+2024-11-11 18:11:04,687 - INFO - Splitting datasets
+2024-11-11 18:15:18,382 - INFO - Epoch [1], Train Loss: 1.2350, Train Acc: 45.82%, Val Acc: 53.33%
+2024-11-11 18:19:20,406 - INFO - Epoch [2], Train Loss: 0.9979, Train Acc: 63.69%, Val Acc: 60.00%
+2024-11-11 18:23:44,168 - INFO - Epoch [3], Train Loss: 0.8794, Train Acc: 67.68%, Val Acc: 62.22%
+2024-11-11 18:27:49,112 - INFO - Epoch [4], Train Loss: 0.8590, Train Acc: 67.49%, Val Acc: 61.33%
+2024-11-11 18:31:51,214 - INFO - Epoch [5], Train Loss: 0.8188, Train Acc: 70.53%, Val Acc: 60.89%
+2024-11-11 18:35:54,201 - INFO - Epoch [6], Train Loss: 0.7629, Train Acc: 72.53%, Val Acc: 67.56%
+2024-11-11 18:40:05,061 - INFO - Epoch [7], Train Loss: 0.7478, Train Acc: 73.95%, Val Acc: 65.33%
+2024-11-11 18:44:18,263 - INFO - Epoch [8], Train Loss: 0.7230, Train Acc: 73.95%, Val Acc: 64.00%
+2024-11-11 18:48:21,191 - INFO - Epoch [9], Train Loss: 0.7166, Train Acc: 73.67%, Val Acc: 64.44%
+2024-11-11 18:52:35,352 - INFO - Epoch [10], Train Loss: 0.7133, Train Acc: 74.14%, Val Acc: 64.89%
+2024-11-11 18:52:52,998 - INFO - Test Accuracy: 61.06%
