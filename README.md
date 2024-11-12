@@ -22,3 +22,9 @@ python -m pip install -r requirements.txt
 cd /scrapper
 python generator.py -q "healthy house plant" -b "bing" -n 500 -s "medium"
 ```
+
+## Model Training
+In project root, run:
+```bash
+python3 ./model/main.py
+```
