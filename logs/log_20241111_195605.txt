@@ -1,0 +1,25 @@
+2024-11-11 19:56:05,225 - INFO - Using device: cpu
+2024-11-11 19:56:05,226 - INFO - Loading datasets
+2024-11-11 19:56:05,234 - INFO - Splitting datasets
+2024-11-11 19:56:05,791 - INFO - Begin Epoch 0
+2024-11-11 20:00:10,645 - INFO - Epoch [1], Train Loss: 1.2696, Train Acc: 44.77%, Val Acc: 52.00%
+2024-11-11 20:00:10,852 - INFO - Begin Epoch 1
+2024-11-11 20:04:40,527 - INFO - Epoch [2], Train Loss: 1.0132, Train Acc: 61.03%, Val Acc: 62.22%
+2024-11-11 20:04:40,741 - INFO - Begin Epoch 2
+2024-11-11 20:08:47,139 - INFO - Epoch [3], Train Loss: 0.9408, Train Acc: 63.50%, Val Acc: 61.33%
+2024-11-11 20:08:47,140 - INFO - Begin Epoch 3
+2024-11-11 20:12:53,093 - INFO - Epoch [4], Train Loss: 0.8693, Train Acc: 67.02%, Val Acc: 68.00%
+2024-11-11 20:12:53,304 - INFO - Begin Epoch 4
+2024-11-11 20:16:59,709 - INFO - Epoch [5], Train Loss: 0.8262, Train Acc: 70.44%, Val Acc: 64.44%
+2024-11-11 20:16:59,711 - INFO - Begin Epoch 5
+2024-11-11 20:21:09,488 - INFO - Epoch [6], Train Loss: 0.8072, Train Acc: 69.68%, Val Acc: 64.89%
+2024-11-11 20:21:09,489 - INFO - Begin Epoch 6
+2024-11-11 20:25:18,283 - INFO - Epoch [7], Train Loss: 0.7793, Train Acc: 70.34%, Val Acc: 68.89%
+2024-11-11 20:25:18,491 - INFO - Begin Epoch 7
+2024-11-11 20:29:22,008 - INFO - Epoch [8], Train Loss: 0.7425, Train Acc: 72.05%, Val Acc: 69.33%
+2024-11-11 20:29:22,215 - INFO - Begin Epoch 8
+2024-11-11 20:33:30,023 - INFO - Epoch [9], Train Loss: 0.7412, Train Acc: 73.57%, Val Acc: 67.11%
+2024-11-11 20:33:30,025 - INFO - Begin Epoch 9
+2024-11-11 20:37:38,494 - INFO - Epoch [10], Train Loss: 0.7370, Train Acc: 73.00%, Val Acc: 68.00%
+2024-11-11 20:37:56,233 - INFO - Test Accuracy: 65.93%
+2024-11-11 20:37:56,638 - INFO - Model saved successfully at ./trained_models/model_20241111_195605.pth
