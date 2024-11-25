@@ -1,4 +1,3 @@
-
 import os
 import logging
 import torch
@@ -7,12 +6,17 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import transforms
 from torch.utils.data import DataLoader, ConcatDataset, random_split
 from datetime import datetime
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set up logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-logs_dir = './logs'
+logs_dir = '/content/drive/MyDrive'
 log_file_path = f'{logs_dir}/log_{timestamp}.txt'
 file_handler = logging.FileHandler(log_file_path)
 
@@ -20,7 +24,7 @@ file_handler = logging.FileHandler(log_file_path)
 os.makedirs(logs_dir, exist_ok=True)
 
 console_handler = logging.StreamHandler()
-file_handler = logging.FileHandler(f'./logs/log_{timestamp}.txt')
+file_handler = logging.FileHandler(f'/content/drive/MyDrive/log_{timestamp}.txt')
 
 # Set log format
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
@@ -43,25 +47,30 @@ def load_model(model_class, path):
     model = model_class()
     model.load_state_dict(torch.load(path))
     return model
-    
+
 
 # Define the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"Using device: {device}")
 
+
 # Define the transformations to apply to the images
 transform = transforms.Compose([
     transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
+    transforms.RandomRotation(30),
+    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
+
 # Load the datasets
 logger.info("Loading datasets")
-dataset1 = ImageFolder('./scrapper/dataset/bing_images',
+dataset1 = ImageFolder('/content/drive/MyDrive/OneDrive_2_2024-11-15/bing_images',
                        transform=transform)
-dataset2 = ImageFolder('./scrapper/dataset/google_images',
+dataset2 = ImageFolder('/content/drive/MyDrive/OneDrive_2_2024-11-15/google_images',
                        transform=transform)
 
 combined_dataset = ConcatDataset([dataset1, dataset2])
@@ -76,18 +85,35 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 # Initialize the model and move it to the device
-model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1) # or ResNet50_Weights.DEFAULT for the latest versio
-model.fc = torch.nn.Linear(model.fc.in_features, len(dataset1.classes))
-model = model.to(device)
 
-# Loss function and optimizer
+
+### ResNet34 and ResNet50 ###
+model = models.resnet34(pretrained=True)
+# model = models.resnet50(pretrained=True)
+model.fc = torch.nn.Linear(model.fc.in_features, len(dataset1.classes))
 loss_func = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.fc.parameters(), lr=0.001, momentum=0.9)
+model = model.to(device)
+
+
+### VGG19 ###
+# model = models.vgg19(pretrained=True)
+# for param in model.parameters():
+#     param.requires_grad = False
+
+# model.classifier[6] = torch.nn.Linear(4096, len(dataset1.classes))
+
+# model = model.to(device)
+
+# loss_func = torch.nn.CrossEntropyLoss()
+# optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
+
+
 
 ### Training phase ###
 best_val_acc = 0.0
 
-for epoch in range(10):
+for epoch in range(15):
     model.train()
     running_loss = 0.0
     correct_train = 0
@@ -139,15 +165,40 @@ model.load_state_dict(torch.load('best_resnet50.pth'))
 model.eval()
 correct_test = 0
 total_test = 0
+predictions = []
+targets = []
 with torch.no_grad():
     for inputs, labels in test_loader:
         inputs, labels = inputs.to(device), labels.to(device)
         outputs = model(inputs)
         _, predicted = torch.max(outputs, 1)
+        predictions.extend(predicted.cpu().numpy())
+        targets.extend(labels.cpu().numpy())
         total_test += labels.size(0)
         correct_test += (predicted == labels).sum().item()
 
 test_acc = correct_test / total_test * 100
 logger.info(f"Test Accuracy: {test_acc:.2f}%")
 
-save_model(model, path=f"./trained_models/model_{timestamp}.pth")
+
+save_model(model, path=f"/content/drive/MyDrive/trained_models/model_{test_acc:.2f}_{timestamp}.pth")
+
+
+cm = confusion_matrix(targets, predictions)
+
+plt.figure(figsize=(6,6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=['Anthracnose', 'Healthy', 'Powdery Mildew', 'Sooty Mold'], 
+            yticklabels=['Anthracnose', 'Healthy', 'Powdery Mildew', 'Sooty Mold'])
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
+
+precision = precision_score(targets, predictions, average='weighted')
+recall = recall_score(targets, predictions, average='weighted')
+f1 = f1_score(targets, predictions, average='weighted')
+
+print(f"Precision: {precision}")
+print(f"Recall: {recall}")
+print(f"F1 Score: {f1}")
